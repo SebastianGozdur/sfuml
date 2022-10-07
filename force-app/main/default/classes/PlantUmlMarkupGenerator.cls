@@ -18,16 +18,7 @@ public class PlantUmlMarkupGenerator {
         }
 
         String bodyJson = new ToolingApiCaller().query(query);
-        System.debug('JSON');
-        System.debug(bodyJson);
-
-        insert new SebaTest__c(Response__c = bodyJson);
-
         ToolingApiResponse toolingApiResponse = (ToolingApiResponse) JSON.deserialize(bodyJson, ToolingApiResponse.class);
-
-        System.debug('SEBG');
-        System.debug(toolingApiResponse);
-
         return this.processToolingApiResponse(toolingApiResponse);
     }
 
@@ -36,8 +27,6 @@ public class PlantUmlMarkupGenerator {
         Map<String, List<InnerClass>> innerClasses = this.extractInnerClasses(toolingApiResponse);
         String body = this.generatePlantUmlBody(toolingApiResponse, interfaces, innerClasses);
 
-        System.debug('BODY');
-        System.debug(body);
         return body;
     }
 
@@ -55,7 +44,6 @@ public class PlantUmlMarkupGenerator {
 
     private Map<String, List<InnerClass>> extractInnerClasses(ToolingApiResponse toolingApiResponse) {
         Map<String, List<InnerClass>> innerClassesByParentName = new Map<String, List<InnerClass>>();
-
 
         for (Record element : toolingApiResponse.records) {
             if (element?.SymbolTable?.innerClasses != null && element?.SymbolTable?.innerClasses?.size() > 0) {
@@ -131,7 +119,6 @@ public class PlantUmlMarkupGenerator {
 
         if (properties.size() > 0) {
             for (Property property : properties) {
-               // body += property.modifiers.sort(this.sortModifiers).join(' ') + ' ';
                 body += String.join(new SortService().customSort(property.modifiers), ' ') + ' ';
                 body += property.type + ' ' + property.name;
                 body += '\n';
@@ -145,7 +132,6 @@ public class PlantUmlMarkupGenerator {
         String body = '';
 
         for (Method method : methods) {
-          //  body += method.modifiers.sort(this.sortModifiers).join(' ') + ' ';
             body += String.join(new SortService().customSort(method.modifiers), ' ') + ' ';
             body += method.returnType + ' ';
             body += method.name + '(';
@@ -165,19 +151,6 @@ public class PlantUmlMarkupGenerator {
     private String addParentChildRelation(String parentName, String childName) {
         return parentName + '+--' + childName + this.newLine();
     }
-
-    // private Integer sortModifiers(String a, String b) {
-    //     if ((a == 'public' || a == 'private') && (b == 'static' || b == 'final')) {
-    //         return -1;
-    //     } else if ((b == 'public' || b == 'private') && (a == 'static' || a == 'final')) {
-    //         return 1;
-    //     } else if ((a == 'final') && (b == 'static')) {
-    //         return 1;
-    //     } else if ((a == 'static') && (b == 'final')) {
-    //         return -1;
-    //     }
-    //     return 0;
-    // }
 
     private String processExtension(String parentClass) {
         if (String.isNotEmpty(parentClass)) {
