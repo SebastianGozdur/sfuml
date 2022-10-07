@@ -1,10 +1,20 @@
 public with sharing class MetadataSync implements Queueable, Database.AllowsCallouts {
+
+    private List<String> classes;
+
+    public MetadataSync(List<String> classes) {
+        this.classes = classes;
+    }
     
     public void execute(QueueableContext context) {
-        System.debug('QUEUEABLE');
-        String markup = new PlantUmlMarkupGenerator().generateMarkup(new List<String>());
+        String markup;
+        
+        if (this.classes.isEmpty()) {
+            markup = new PlantUmlMarkupGenerator().generateMarkup(new List<String>());
+        } else {
+            markup = new PlantUmlMarkupGenerator().generateMarkup(this.classes);
+        }   
 
-        //RecordType rt = [SELECT Id from RecordType WHERE DeveloperName = 'UML_Markup'];
         List<ContentDocument> existingContentDocuments = [SELECT Id FROM ContentDocument WHERE LatestPublishedVersion.Title = 'SFUML_MARKUP']; 
         if (!existingContentDocuments.isEmpty()) {
             delete existingContentDocuments;

@@ -21,6 +21,8 @@ public class PlantUmlMarkupGenerator {
         System.debug('JSON');
         System.debug(bodyJson);
 
+        insert new SebaTest__c(Response__c = bodyJson);
+
         ToolingApiResponse toolingApiResponse = (ToolingApiResponse) JSON.deserialize(bodyJson, ToolingApiResponse.class);
 
         System.debug('SEBG');

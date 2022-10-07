@@ -12,9 +12,10 @@ public with sharing class PlantUmlViewerController {
     }
 
     @AuraEnabled
-    public static void generateMarkup(){
+    public static void generateMarkup(String classesSerialized){
         try {
-            System.enqueueJob(new MetadataSync());
+            List<String> classes = (List<String>) JSON.deserialize(classesSerialized, List<String>.class);
+            System.enqueueJob(new MetadataSync(classes));
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }

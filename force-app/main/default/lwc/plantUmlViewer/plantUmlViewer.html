@@ -1,3 +1,18 @@
 <template>
-    <lightning-textarea min-length="500" name="input1" label="Latest Version" value={markup}></lightning-textarea>
+    <article class="slds-card">
+        <lightning-spinner if:true={showSpinner} alternative-text="Loading" size="small"></lightning-spinner>
+        <div class="slds-card__header slds-grid">
+          <header class="slds-media slds-media_center slds-has-flexi-truncate">
+            <div class="slds-media__body">
+                <lightning-button variant="brand" label="Generate UML Markup" onclick={handleMarkupGeneration} class="slds-m-left_x-small"></lightning-button>
+                <lightning-button variant="brand" label="Retrieve Latest Markup" onclick={handleMarkupRetrieval} class="slds-m-left_x-small"></lightning-button>
+            </div>
+          </header>
+        </div>
+        <div class="slds-card__body slds-p-around_medium">
+            <lightning-textarea min-length="500" label="Latest Version" class="textAreaBody" value={markup}></lightning-textarea>
+        </div>
+        <footer class="slds-card__footer"></footer>
+      </article>
+      <c-plant-uml-generation-modal is-modal-open={isMarkupGenerationModalVisible} onmodalclose={handleClose} onsubmitdetails={handleSubmitDetails}></c-plant-uml-generation-modal>
 </template>
